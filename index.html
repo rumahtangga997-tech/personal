@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Girlfriend?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff69b4;
+            pointer-events: none;
+            animation: float 2s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            color: #d5007a;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        #yesBtn {
+            background: #ff4081;
+            color: white;
+        }
+        #yesBtn:hover {
+            background: #e91e63;
+        }
+        #noBtn {
+            background: #ccc;
+            color: #333;
+            position: relative;
+        }
+        #noBtn:hover {
+            background: #bbb;
+        }
+        .date-form {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .activity-options {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        .activity-options label {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="page1" class="container">
+        <h1>Will You Be My Girlfriend?</h1>
+        <p>I've been thinking about you a lot... What do you say?</p>
+        <button id="yesBtn">Yes I do</button>
+        <button id="noBtn">No, leave me alone</button>
+    </div>
+
+    <div id="page2" class="container hidden">
+        <h1>Let's Schedule Our First Date!</h1>
+        <div class="date-form">
+            <label for="date">Pick a Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="time">Pick a Time:</label>
+            <input type="time" id="time" required>
+            
+            <label>Choose an Activity:</label>
+            <div class="activity-options">
+                <label><input type="radio" name="activity" value="Pizza"> Pizza</label>
+                <label><input type="radio" name="activity" value="London"> London</label>
+                <label><input type="radio" name="activity" value="Movie"> Movie</label>
+            </div>
+            
+            <button id="continueBtn">Continue</button>
+        </div>
+    </div>
+
+    <div id="page3" class="container hidden">
+        <h1>Our Date is Set!</h1>
+        <div class="card" id="dateCard">
+            <!-- Content will be populated by JS -->
+        </div>
+    </div>
+
+    <script>
+        // Hearts trail animation
+        document.addEventListener('mousemove', function(e) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '❤️';
+            heart.style.left = e.pageX + 'px';
+            heart.style.top = e.pageY + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 2000);
+        });
+
+        // Page navigation
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const page3 = document.getElementById('page3');
+
+        // Page 1: Button logic
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+
+        yesBtn.addEventListener('click', () => {
+            page1.classList.add('hidden');
+            page2.classList.remove('hidden');
+        });
+
+        noBtn.addEventListener('mouseover', () => {
+            // Randomly move the button
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        });
+
+        noBtn.addEventListener('click', () => {
+            alert("Nice try! But I won't give up that easily. 😉");
+        });
+
+        // Page 2: Date scheduling
+        const dateInput = document.getElementById('date');
+        const timeInput = document.getElementById('time');
+        const activityRadios = document.querySelectorAll('input[name="activity"]');
+        const continueBtn = document.getElementById('continueBtn');
+        let selectedActivity = '';
+
+        activityRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                selectedActivity = radio.value;
+            });
+        });
+
+        continueBtn.addEventListener('click', () => {
+            if (!dateInput.value || !timeInput.value || !selectedActivity) {
+                alert('Please fill in all fields!');
+                return;
+            }
+            page2.classList.add('hidden');
+            page3.classList.remove('hidden');
+            displayDateCard();
+        });
+
+        // Page 3: Display date card
+        function displayDateCard() {
+            const dateCard = document.getElementById('dateCard');
+            dateCard.innerHTML = `
+                <h2>Date Details</h2>
+                <p><strong>Date:</strong> ${dateInput.value}</p>
+                <p><strong>Time:</strong> ${timeInput.value}</p>
+                <p><strong>Activity:</strong> ${selectedActivity}</p>
+                <p>I'm so excited! Can't wait to see you. 💕</p>
+            `;
+        }
+    </script>
+</body>
+</html>
